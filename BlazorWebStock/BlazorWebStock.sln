@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32526.322
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWebStock", "BlazorWebStock.csproj", "{265D80CE-34F2-4FC4-BED6-1D18562173D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWebStock.API", "..\BlazorWebStock.API\BlazorWebStock.API.csproj", "{C9F4C154-E24D-4790-B533-91D1C8087940}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{265D80CE-34F2-4FC4-BED6-1D18562173D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{265D80CE-34F2-4FC4-BED6-1D18562173D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{265D80CE-34F2-4FC4-BED6-1D18562173D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{265D80CE-34F2-4FC4-BED6-1D18562173D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9F4C154-E24D-4790-B533-91D1C8087940}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9F4C154-E24D-4790-B533-91D1C8087940}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9F4C154-E24D-4790-B533-91D1C8087940}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9F4C154-E24D-4790-B533-91D1C8087940}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DEF69B59-5541-4222-8E14-00A10C863BD8}
+	EndGlobalSection
+EndGlobal
