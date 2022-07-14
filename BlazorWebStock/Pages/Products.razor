@@ -1,0 +1,27 @@
+﻿@using BlazorWebStock.Services;
+@using BlazorWebStockLibrary.Model;
+
+@inject IProductServices productService
+
+@if(products == null){
+	<p>Loading...</p>
+} else {
+	<div class="d-flex flex-wrap">
+		@foreach(var p in products){
+		<div class="card m-1" style="width: 25rem;">
+          <img src="@p.ImgUrl" class="card-img-top" alt="">
+          <div class="card-body">
+            <h5 class="card-title">@p.ProductName</h5>
+            <p class="card-subtitle">@p.Description</p>
+            <h6 class="card-text">@p.Price</h6>
+            <a href="/Detail/@p.Id" class="btn btn-outline-dark"><span class="oi oi-cart"></span> Buy</a>
+          </div>
+        </div>
+	}
+	</div>
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<Product> products { get; set; }   
+}

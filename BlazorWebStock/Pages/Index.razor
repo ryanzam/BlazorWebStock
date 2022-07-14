@@ -1,9 +1,70 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+@using BlazorWebStock.Services;
+@using BlazorWebStockLibrary.Model;
 
-<h1>Hello, world!</h1>
+@inject IProductServices productService
+@inject ICategoryService categoryService
 
-Welcome to your new app.
+<PageTitle>Products</PageTitle>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<div class="row ">
+	@if(categories is not null)
+	{
+		<div class="col-md-4">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Categories</h5>
+					<p class="card-text" @onclick="(() => SortByCategory())">All</p>
+					@foreach(var c in categories)
+					{
+						<p class="card-text" @onclick="(() => SortByCategory(c.Name))">@c.Name</p>
+					}
+				</div>
+			</div>
+		</div>
+	}
+	<div class="col-md-8">
+		<Products products="@products"/>
+	</div>
+</div>
+
+@code {
+	private IEnumerable<Product> products;
+	private IEnumerable<Category> categories;
+
+	private string selectedCategory = "All";
+
+	protected override async Task OnInitializedAsync()
+	{
+		products = await productService.GetProducts();
+		categories = await categoryService.GetCategories();
+	}
+
+	protected  async override Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await FilterProducts();
+			StateHasChanged();
+		}
+	}
+
+	public async Task FilterProducts()
+	{
+		var res = await productService.GetProducts();
+
+		if(selectedCategory != "All")
+		{           
+			res = res.Where(p => p.Category.Name == selectedCategory).ToList();
+		}
+		products = res;
+	}
+
+	private async Task SortByCategory(string category = "All")
+	{
+		selectedCategory = category;
+		await FilterProducts();
+	}
+
+}

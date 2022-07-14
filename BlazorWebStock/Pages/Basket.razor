@@ -1,0 +1,39 @@
+﻿@page "/basket"
+
+@using BlazorWebStock.Services
+@using BlazorWebStockLibrary.Model
+
+@inject IBasketService basketService
+
+<h3>Your Items</h3>
+
+@if(items == null){
+    <p>Loading...</p>
+} 
+else
+{
+    @foreach(var itm in items)
+    {
+    <div class="row mt-2 border h-25">
+		<div class="col-md-6">
+				<img src="@itm.Product.ImgUrl" class="w-100" alt="">
+		</div>
+		<div class="col-md-6">
+			<h4>@itm.Product.ProductName</h4>
+			<p>@itm.Product.Description</p>
+			<p>@itm.Product.Price $</p>
+			<p>Stock : @itm.Product.Quantity</p>
+			<button class="btn btn-dark" ><span class="oi oi-cart"></span></button>
+		</div>
+	</div>
+    }
+}
+
+@code {
+	private IEnumerable<BasketItem> items { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		items = await basketService.GetItemsFromBasket("62cf18af7c3f26e22d05d1a8");
+	}
+}
