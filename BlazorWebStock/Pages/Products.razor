@@ -1,7 +1,9 @@
 ﻿@using BlazorWebStock.Services;
 @using BlazorWebStockLibrary.Model;
+@using BlazorWebStock.Helpers;
 
 @inject IProductServices productService
+@inject IBasketService basketService
 
 @if(products == null){
 	<p>Loading...</p>
@@ -23,5 +25,12 @@
 
 @code {
     [Parameter]
-    public IEnumerable<Product> products { get; set; }   
+    public IEnumerable<Product> products { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var basketItems = await basketService.GetItemsFromBasket("62cf18af7c3f26e22d05d1a8");
+        var totQuantity = TotalHelper.GetTotal(basketItems, "quanity");
+        basketService.FlagEventOnBasketChanged((int)totQuantity);
+    }
 }

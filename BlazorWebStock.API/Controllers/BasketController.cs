@@ -75,5 +75,18 @@ namespace BlazorWebStock.API.Controllers
                 throw;
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task RemoveItemFromBasket(string id)
+        {
+            try
+            {
+                await _basketRepository.RemoveItemFromBasket(id);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

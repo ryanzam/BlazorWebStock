@@ -2,9 +2,13 @@
 
 namespace BlazorWebStock.Services
 {
-	public interface IBasketService
-	{
-		Task<BasketItem> AddItemToBasket(BasketItem item);
-		Task<IEnumerable<BasketItem>> GetItemsFromBasket(string userId);
-	}
+    public interface IBasketService
+    {
+        Task RemoveItemFromBasket(string id);
+        Task AddItemToBasket(BasketItem item);
+        Task<List<BasketItem>> GetItemsFromBasket(string userId);
+
+        event Action<int> OnBasketChanged;
+        void FlagEventOnBasketChanged(int qty);
+    }
 }

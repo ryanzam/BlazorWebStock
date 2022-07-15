@@ -2,38 +2,87 @@
 
 @using BlazorWebStock.Services
 @using BlazorWebStockLibrary.Model
+@using BlazorWebStock.Helpers
 
 @inject IBasketService basketService
 
-<h3>Your Items</h3>
+<nav aria-label="breadcrumb mt-4 pt-3">
+	  <ol class="breadcrumb">
+		<li class="breadcrumb-item"><a href="/"><span class="oi oi-home"></span></a></li>
+		<li class="breadcrumb-item active" aria-current="page">Your Items</li>
+	  </ol>
+</nav>
 
 @if(items == null){
-    <p>Loading...</p>
+	<p>Loading...</p>
 } 
 else
 {
-    @foreach(var itm in items)
-    {
-    <div class="row mt-2 border h-25">
-		<div class="col-md-6">
-				<img src="@itm.Product.ImgUrl" class="w-100" alt="">
+	if(items.Count() > 0)
+	{
+		 @foreach(var itm in items)
+		{
+		<div class="row mt-4 border" style="height: 250px;">
+			<div class="col-md-6">
+					<img style="height: 250px;" src="@itm.Product.ImgUrl" class="w-100" alt="">
+			</div>
+			<div class="col-md-6 pt-2">
+				<h4>@itm.Product.ProductName</h4>
+				<p>@itm.Product.Description</p>
+				<p>@itm.Product.Price $</p>
+				<p>@itm.Product.Quantity piece</p>
+				<button class="btn btn-outline-danger"  @onclick="() => RemoveItem(itm.Id)"><span class="oi oi-trash"></span> Remove</button>
+			</div>
 		</div>
-		<div class="col-md-6">
-			<h4>@itm.Product.ProductName</h4>
-			<p>@itm.Product.Description</p>
-			<p>@itm.Product.Price $</p>
-			<p>Stock : @itm.Product.Quantity</p>
-			<button class="btn btn-dark" ><span class="oi oi-cart"></span></button>
+		}
+		<div class="row mt-4 mb-5">
+			<div class="col-md-6">
+				<h3 class="pt-2 text-end">Total</h3>
+			</div>
+			<div class="col-md-6 pt-2">
+				<h4 class="pt-2 mb-4">@NetPrice $</h4>
+				<a href="/checkout" class="btn btn-outline-primary">Checkout <span class="oi oi-credit-card"></span></a>
+			</div>
 		</div>
-	</div>
-    }
+	} else
+	{
+		<p>Basket is empty!</p>
+	}
 }
 
 @code {
 	private IEnumerable<BasketItem> items { get; set; }
 
+	private decimal NetPrice { get; set; }
+	private decimal NetQty { get; set; }
+
 	protected override async Task OnInitializedAsync()
 	{
-		items = await basketService.GetItemsFromBasket("62cf18af7c3f26e22d05d1a8");
+		items = await GetItemsInBasket();
+		BasketChanged();
+	}
+
+	private async Task RemoveItem(string pid)
+	{
+		await basketService.RemoveItemFromBasket(pid);
+		items = await GetItemsInBasket();
+		BasketChanged();
+	}
+
+	private async Task<IEnumerable<BasketItem>> GetItemsInBasket()
+	{
+		return await basketService.GetItemsFromBasket("62cf18af7c3f26e22d05d1a8");
+	}
+
+	private void CalculateTotal()
+	{
+		NetPrice = TotalHelper.GetTotal(items, "price");
+		NetQty = TotalHelper.GetTotal(items, "quantity");
+	}
+
+	private void BasketChanged()
+	{
+		CalculateTotal();
+		basketService.FlagEventOnBasketChanged((int)NetQty);
 	}
 }

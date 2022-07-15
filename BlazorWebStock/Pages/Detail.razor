@@ -49,13 +49,15 @@
 		{
 			BasketItem bi = new();
 			BlazorWebStockLibrary.Model.Basket b = new();
+
+			// TODO : Implement user management, hardcoded for now.
 			b.Id = "62cfc3752760ffd7be5bde31";
 
 			bi.Basket = b;
 			bi.Product = p;
 			bi.Quantity = p.Quantity;
 
-			var basketItem = await basketService.AddItemToBasket(bi);
+			await basketService.AddItemToBasket(bi);
 			navManager.NavigateTo("/basket");
 		} 
 		catch(Exception)

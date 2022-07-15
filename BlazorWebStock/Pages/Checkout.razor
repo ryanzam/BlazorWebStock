@@ -1,0 +1,51 @@
+﻿@page "/Checkout"
+
+@using Microsoft.JSInterop
+@using BlazorWebStockLibrary.Model
+@using BlazorWebStock.Services
+@using BlazorWebStock.Helpers
+
+@inject IJSRuntime jsRuntime
+@inject IBasketService basketService
+
+<h3>Checkout</h3>
+
+<div id="smart-button-container">
+    <input type="hidden" name="descriptionInput" id="description" maxlength="127" @bind="Description">
+    <input name="amountInput" type="hidden" id="amount" @bind="TotalAmount"><span> USD</span>
+
+    <div style="text-align: center; margin-top: 0.625rem;" id="paypal-button-container"></div>
+</div>
+
+@code {
+    private IEnumerable<BasketItem> items { get; set; }
+
+    private decimal TotalAmount { get; set; }
+    private string Description { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            items = await basketService.GetItemsFromBasket("62cf18af7c3f26e22d05d1a8");
+            if(items is not null)
+            {
+                TotalAmount = TotalHelper.GetTotal(items, "price");
+                Description = "Order_" + TotalAmount + "_" + DateTime.Now.ToShortDateString();
+            }
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await jsRuntime.InvokeVoidAsync("initPayPalButton");
+        }
+    }
+}

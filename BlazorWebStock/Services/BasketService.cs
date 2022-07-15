@@ -7,12 +7,14 @@ namespace BlazorWebStock.Services
     {
         private readonly HttpClient _httpClient;
 
+        public event Action<int> OnBasketChanged;
+
         public BasketService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<BasketItem>> GetItemsFromBasket(string userId)
+        public async Task<List<BasketItem>> GetItemsFromBasket(string userId)
         {
             try
             {
@@ -20,7 +22,7 @@ namespace BlazorWebStock.Services
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadFromJsonAsync<IEnumerable<BasketItem>>();
+                    return await response.Content.ReadFromJsonAsync<List<BasketItem>>();
                 }
                 else
                 {
@@ -34,24 +36,35 @@ namespace BlazorWebStock.Services
             }
         }
 
-        public async Task<BasketItem> AddItemToBasket(BasketItem item)
+        public async Task AddItemToBasket(BasketItem item)
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("api/Basket", item);
-                if (response.IsSuccessStatusCode)
-                {
-                    return await response.Content.ReadFromJsonAsync<BasketItem>();
-                }
-                else
-                {
-                    var msg = await response.Content.ReadAsStringAsync();
-                    throw new Exception(msg);
-                }
+                await _httpClient.PostAsJsonAsync("api/Basket", item);
             }
             catch (Exception)
             {
                 throw;
+            }
+        }
+
+        public async Task RemoveItemFromBasket(string id)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"api/Basket/{id}");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void FlagEventOnBasketChanged(int qty)
+        {
+            if (OnBasketChanged != null)
+            {
+                OnBasketChanged.Invoke(qty);
             }
         }
     }
